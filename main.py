@@ -119,20 +119,20 @@ def load_data():
     for idx in range(1, len(img_list) + 1):
         pose_list.append(utils.cvt_pose(pose_dict[idx]))
 
-    colmap_pcd_path = "./colmapInOutput/pcd/points3D.bin"
-    colmap_pcd_dict = read_write_model.read_points3D_binary(colmap_pcd_path)
-    colmap_pcd_list = []
-    for point in colmap_pcd_dict.items():
-        x, y, z = point[1].xyz
-        r, g, b = point[1].rgb
-        colmap_pcd_list.append([x, y, z, r, g, b])
-    colmap_pcd = np.stack(colmap_pcd_list)
+    # colmap_pcd_path = "./colmapInOutput/pcd/points3D.bin"
+    # colmap_pcd_dict = read_write_model.read_points3D_binary(colmap_pcd_path)
+    # colmap_pcd_list = []
+    # for point in colmap_pcd_dict.items():
+    #     x, y, z = point[1].xyz
+    #     r, g, b = point[1].rgb
+    #     colmap_pcd_list.append([x, y, z, r, g, b])
+    # colmap_pcd = np.stack(colmap_pcd_list)
 
-    return img_list, depth_list, intrinsic_list, pose_list, img_path_list, colmap_pcd
+    return img_list, depth_list, intrinsic_list, pose_list, img_path_list
 
 
 def main():
-    imgs, depths, intrinsics, poses, img_path_list, colmap_pcd =  load_data()
+    imgs, depths, intrinsics, poses, img_path_list =  load_data()
 
     imgs = [(img/255)[...,[2, 1, 0]] for img in imgs]
     
