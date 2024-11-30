@@ -13,13 +13,8 @@ class PcdGenerator:
         self.intrinsics = intrinsics
         self.poses = poses
 
-        # align_poses
-        # ref_pose = np.linalg.inv(self.poses[0])
-        # self.poses = [ref_pose @ pose for pose in self.poses]
-
-
+        
     def generate_for_single_img(self, image, depth, intrinsic, pose):
-
         h, w = depth.shape
 
         u, v = np.meshgrid(np.arange(w), np.arange(h))
@@ -36,21 +31,15 @@ class PcdGenerator:
         v = v[valid]
         z = z[valid]
 
+        r = pose[:3, :3]
+        t = pose[:3, 3]
+        r_inv = r.T
+        t_inv = -torch.matmul(r_inv, t)
+
         x = (u.float() - intrinsic[0, 2]) * z / intrinsic[0, 0]
         y = (v.float() - intrinsic[1, 2]) * z / intrinsic[0, 0]
         points_cam = torch.stack([x, y, z], dim=1)
-        points_world = torch.matmul(points_cam, pose[:3, :3].T) + pose[:3, 3]
-
-        # pixels_h = np.stack([u, v, np.ones_like(u)], axis=0)
-
-        # intrinsic_inv = np.linalg.inv(intrinsic)
-        # points_camera = intrinsic_inv @ (pixels_h * z.detach().cpu().numpy())
-
-        # points_camera = points_camera.reshape(3, -1)
-        # points_camera_h = np.vstack([points_camera, np.ones(points_camera.shape[1])])
-
-        # points_world_h = pose @ points_camera_h
-        # points_world = points_world_h[:3].T  
+        points_world = torch.matmul(points_cam, r_inv.T) + t_inv
 
         colors = image[v.detach().cpu().numpy(), u.detach().cpu().numpy(), :]  
 

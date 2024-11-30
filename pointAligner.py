@@ -1,5 +1,6 @@
 import open3d as o3d
 import numpy as np
+import utils
 
 
 class PointAligner:
@@ -16,6 +17,7 @@ class PointAligner:
         source_pcd = self.numpy_to_pcd(source_pcd)
         target_pcd = self.numpy_to_pcd(target_pcd)
 
+        # for LLFF, threshold = 25
         threshold = 25
         transformation_init = np.eye(4) 
 
@@ -23,7 +25,6 @@ class PointAligner:
             source_pcd, target_pcd, threshold, transformation_init,
             o3d.pipelines.registration.TransformationEstimationPointToPoint()
         )
-
         source_pcd.transform(reg_p2p.transformation)
 
         aligned_points = np.hstack((
@@ -33,7 +34,7 @@ class PointAligner:
         return aligned_points
     
 
-    def merge_point_clouds(self, pcd_list, voxel_size=0.05):
+    def merge_point_clouds(self, pcd_list, voxel_size=0.00001):
         pcd1 = self.numpy_to_pcd(pcd_list[0])
         pcd2 = self.numpy_to_pcd(pcd_list[1])
 

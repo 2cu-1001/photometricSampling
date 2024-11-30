@@ -1,6 +1,7 @@
 import numpy as np
 import struct
 import open3d as o3d
+import matplotlib.pyplot as plt
 
 
 def qvec2rotmat(qvec):
@@ -17,6 +18,7 @@ def cvt_pose(src):
     R = qvec2rotmat(src.qvec)  
     t = src.tvec              
     pose = np.zeros((3, 4))
+    pose = np.eye(4)
     pose[:3, :3] = R            
     pose[:3, 3] = t            
 
@@ -134,3 +136,8 @@ def compute_normal(pcds, k=5):
         normals.append(cur_normal)
 
     return normals
+
+
+def show_img(img):
+    plt.imsow(img)
+    plt.pause
